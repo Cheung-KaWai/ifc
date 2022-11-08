@@ -1,10 +1,14 @@
-import { useState } from "react";
-import "./App.css";
+import { useContext, useState } from "react";
+import styled from "styled-components";
 import { IfcAPI } from "web-ifc/web-ifc-api";
+import { Scene } from "./components/Scene";
+import { DataContext } from "./context/DataContextProvider";
 
 const ifcapi = new IfcAPI();
 
 function App() {
+  const context = useContext(DataContext);
+
   const [modelID, setModelID] = useState(0);
   const [data, setData] = useState(null);
   const [mapData, setMapData] = useState(null);
@@ -12,6 +16,7 @@ function App() {
 
   const handleDrop = (ifcFile) => {
     const ifc = ifcFile.target.files[0];
+    context.setIfc(ifc);
     const reader = new FileReader();
     reader.onload = () => LoadFile(reader.result);
     reader.readAsText(ifc);
@@ -62,16 +67,6 @@ function App() {
     console.log(ifcapi.GetLine(modelID, 612));
     console.log(element);
     download();
-    // console.log(JSON.stringify(allItems, undefined, 2));
-    // const listData = new Map(Object.entries(allItems));
-    // console.log(listData);
-
-    // const element = ifcapi.GetRawLineData(modelID, 612);
-    // element.arguments[2].value = 99;
-    // ifcapi.WriteRawLineData(modelID, element);
-    // console.log(ifcapi.GetLine(modelID, 612));
-    // console.log(element);
-    // download();
   }
 
   function download() {
@@ -113,10 +108,15 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <ContainerApp>
+      <Scene />
       <input type={"file"} onChange={handleDrop} />
-      {neededData && neededData.map((prop, key) => <p key={key}>{prop.expressID}</p>)}
-    </div>
+      {/* {neededData && neededData.map((prop, key) => <p key={key}>{prop.expressID}</p>)} */}
+    </ContainerApp>
   );
 }
 export default App;
+
+const ContainerApp = styled.div`
+  display: flex;
+`;
