@@ -7,6 +7,7 @@ export const DataContextProvider = ({ children }) => {
   const [modelID, setModelID] = useState(null);
   const [expressID, setExpressID] = useState(null);
   const [modelName, setModelName] = useState(null);
+  const [propsData, setPropsData] = useState(null);
   const viewerRef = useRef();
 
   const values = {
@@ -17,6 +18,8 @@ export const DataContextProvider = ({ children }) => {
     expressID,
     setExpressID,
     viewerRef,
+    setPropsData,
+    propsData,
   };
 
   return <DataContext.Provider value={values}>{children}</DataContext.Provider>;

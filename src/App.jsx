@@ -15,6 +15,10 @@ function App() {
   const [data, setData] = useState(null);
   const [mapData, setMapData] = useState(null);
   const [neededData, setNeededData] = useState(null);
+  const [allData, setAllData] = useState(null);
+  const [objectData, setObjectData] = useState(null);
+
+  const filter = "areaheightvolumewidthlength";
 
   useEffect(() => {
     window.ondblclick = async () => {
@@ -22,6 +26,13 @@ function App() {
         const { modelID, id } = await context.viewerRef.IFC.selector.pickIfcItem(true);
         const objectProperties = await context.viewerRef.IFC.getProperties(modelID, id, true);
         // const objectProperties = await context.viewerRef.IFC.getSpatialStructure(modelID);
+        // const lijst = objectProperties.psets.find((el) => el.Name.value === "Dimensions");
+        // const dataProps = lijst.HasProperties.map((el) => ifcapi.GetLine(modelID, el.value));
+        // const relevantData = dataProps.filter((el) => filter.includes(el.Name.value.toLowerCase()));
+        // console.log(relevantData);
+        setObjectData(objectProperties);
+        const jsonData = JSON.stringify(objectProperties, undefined, 2);
+        setAllData(jsonData);
         console.log(objectProperties);
       } catch (e) {
         console.log(e);
@@ -144,8 +155,10 @@ function App() {
       <Scene />
       <PropertiesContainer>
         <input type={"file"} onChange={handleDrop} />
-        <p>ModelID: {context && context.modelID}</p>
-        <p>ExpressID: {context && context.expressID}</p>
+        <p>Name: {objectData?.Name.value}</p>
+        <DataDiv>
+          <pre>{allData}</pre>
+        </DataDiv>
       </PropertiesContainer>
       {/* {neededData && neededData.map((prop, key) => <p key={key}>{prop.expressID}</p>)} */}
     </ContainerApp>
@@ -155,9 +168,17 @@ export default App;
 
 const ContainerApp = styled.div`
   display: flex;
+  height: 100vh;
 `;
 
 const PropertiesContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 50rem;
+`;
+
+const DataDiv = styled.div`
+  flex: 1;
+  overflow-y: scroll;
+  width: 100%;
 `;
